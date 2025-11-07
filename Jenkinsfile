@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+      string(name: "App_Version", description: "provide application version")
+    }
 
     stages {
         stage('Hello') {
@@ -48,6 +51,17 @@ pipeline {
               input 'Proceed'             
            }  
       }
+
+
+       stage('Building the Image'){
+            steps {
+              sh """
+                 echo "---------------Building Docker Image-----------"
+                 docker build -t myjavaapp:"${App_Version}" .
+                 echo "---------------Completed Pusing Docker Image-----------"
+                 """
+           }  
+      }  
     
     }
 }   
