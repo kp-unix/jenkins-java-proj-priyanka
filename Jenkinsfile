@@ -48,7 +48,8 @@ pipeline {
 
       stage('Acceptance'){
             steps {
-              input 'Proceed'             
+            //  input 'Proceed'
+                echo "Proceed"
            }  
       }
 
@@ -59,6 +60,16 @@ pipeline {
                  echo "---------------Building Docker Image-----------"
                  docker build -t priya123456/myjavaapp:"${App_Version}" .
                  echo "---------------Completed Pusing Docker Image-----------"
+                 """
+           }  
+      }  
+
+        stage('Scanning the Image'){
+            steps {
+              sh """
+                 echo "---------------Scanning Docker Image-----------"
+                 trivy image priya123456/myjavaapp:"${App_Version}" .
+                 echo "---------------Completed Scanning Docker Image-----------"
                  """
            }  
       }  
