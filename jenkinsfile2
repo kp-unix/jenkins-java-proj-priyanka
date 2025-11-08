@@ -9,12 +9,6 @@ pipeline {
            """
             }
         }
-         stage('Builiding the Checkout') {
-             steps {
-           sh """
-           echo "-------Building the Java app-------"
-           """
-            }
-        }
+         
 }
 }
