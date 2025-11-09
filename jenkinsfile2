@@ -9,6 +9,23 @@ pipeline {
            """
             }
     }
-       
+   stage("Testing the application"){
+     steps {
+         sh """
+           echo "========Testing Java Application============"
+           mvn test
+           echo "====== Testing Java Application completed====="
+         """      
+      }
+   }
+stage("Building the Docker Image"){
+     steps {
+         sh """
+           echo "========Building the Docker Image ============"
+           
+           echo "====== Building Image Completed ====="
+         """      
+      }
+   }    
 }
 }
