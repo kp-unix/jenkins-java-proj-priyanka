@@ -35,6 +35,19 @@ pipeline {
             }
         }
     }
+        stage('SonarQube Analysis') {
+            steps {
+                echo "Running SonarQube analysis..."
+                withSonarQubeEnv('java-project-SQ') {
+                    sh '''
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=java-project-priyanka \
+                          -Dsonar.host.url=http://localhost:9000 \
+                          -Dsonar.login=${SONAR_AUTH_TOKEN}
+                    '''
+                }
+            }
+        }
 
     post {
         success {
