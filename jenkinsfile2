@@ -1,31 +1,48 @@
 pipeline {
     agent any
- stages {
+
+    stages {
         stage('Checkout') {
-             steps {
-           sh """
-           echo "Checkout done - $PWD"
-           ls -l
-           """
+            steps {
+                echo "Checking out source code..."
+                checkout scm
+                sh '''
+                    echo "Repository contents:"
+                    ls -l
+                '''
             }
+        }
+
+        stage('Test') {
+            steps {
+                echo "Running unit tests..."
+                sh '''
+                    echo "======== Testing Java Application ============"
+                    mvn test
+                    echo "====== Testing Completed ======"
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building the Java application..."
+                sh '''
+                    echo "======== Building Java Application ============"
+                    mvn clean package
+                    echo "====== Build Completed Successfully ======"
+                '''
+            }
+        }
     }
-   stage("Testing the application"){
-     steps {
-         sh """
-           echo "========Testing Java Application============"
-           mvn test
-           echo "====== Testing Java Application completed====="
-         """      
-      }
-   }
-stage("Building the Docker Image"){
-     steps {
-         sh """
-           echo "========Building the Docker Image ============"
-           
-           echo "====== Building Image Completed ====="
-         """      
-      }
-   }    
-}
+
+    post {
+        success {
+            echo "Build succeeded!"
+        }
+        failure {
+            echo "Build failed!"
+        }
+    
+    }
 }
