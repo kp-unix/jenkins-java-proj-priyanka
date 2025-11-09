@@ -34,7 +34,7 @@ pipeline {
                 '''
             }
         }
-    }
+    
         stage('SonarQube Analysis') {
             steps {
                 echo "Running SonarQube analysis..."
@@ -48,6 +48,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         success {
@@ -58,4 +59,5 @@ pipeline {
         }
     
     }
+
 }
