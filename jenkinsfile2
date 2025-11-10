@@ -63,6 +63,18 @@ pipeline {
         }
     }
 
+		stage('Deploy to Minikube') {
+   			 steps {
+        	 echo "Deploying application to Minikube..."
+       		 sh '''
+       			 kubectl apply -f k8s/deployment.yaml
+       			 kubectl apply -f k8s/service.yaml
+       			 kubectl rollout status deployment/java-rest-api
+        '''
+    }
+}
+
+
     post {
         success {
             echo "Build succeeded!"
