@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-    }
+    
 
 		stage('Deploy to Minikube') {
    			 steps {
@@ -72,6 +72,8 @@ pipeline {
        			 kubectl rollout status deployment/java-rest-api
         '''
     }
+}
+
 }
 
 
