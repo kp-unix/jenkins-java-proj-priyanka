@@ -1,0 +1,90 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out source code..."
+                checkout scm
+                sh '''
+                    echo "Repository contents:"
+                    ls -l
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo "Running unit tests..."
+                sh '''
+                    echo "======== Testing Java Application ============"
+                    mvn test
+                    echo "====== Testing Completed ======"
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building the Java application..."
+                sh '''
+                    echo "======== Building Java Application ============"
+                    mvn clean package
+                    echo "====== Build Completed Successfully ======"
+                '''
+            }
+        }
+	
+	stage('Build & Push Docker Image') {
+	    steps {
+        	echo "Building and pushing Docker image..."
+        	script {
+            	docker.withRegistry('https://index.docker.io/v1/', 'docker-login-cred') {
+                def app = docker.build("kalpeshdevops/java-rest-api:latest")
+                app.push()
+            }
+        }
+    }
+}
+
+    
+        stage('SonarQube Analysis') {
+            steps {
+                echo "Running SonarQube analysis..."
+                withSonarQubeEnv('java-project-SQ') {
+                    sh '''
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=java-project-priyanka \
+                          -Dsonar.host.url=http://localhost:9000 \
+                          -Dsonar.login=${SONAR_AUTH_TOKEN}
+                    '''
+                }
+            }
+        }
+    
+
+		stage('Deploy to Minikube') {
+   			 steps {
+        	 echo "Deploying application to Minikube..."
+       		 sh '''
+       			 kubectl apply -f kubernetes/deployment.yaml
+       			 kubectl apply -f kubernetes/service.yaml
+       			 kubectl rollout status deployment/java-rest-api
+        '''
+    }
+}
+
+}
+
+
+    post {
+        success {
+            echo "Build succeeded!"
+        }
+        failure {
+            echo "Build failed!"
+        }
+    
+    }
+
+}
