@@ -62,20 +62,17 @@ pipeline {
             }
         }
 	 stage('Deploy to Minikube on EC2') {
-            steps {
-                echo "Deploying Application to Minikube on EC2..."
+   		 steps {
+        	sshagent(['ec2-ssh']) {   
+            sh '''
+                echo "Copying deployment.yaml to EC2..."
+                scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.108.195.69:/home/ubuntu/
 
-                sshagent(['ec2-ssh']) {
-                    sh '''
-                        echo "Copying deployment.yaml to EC2..."
-                        scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.108.195.69:/home/ubuntu/
-
-                        echo "Applying deployment on EC2..."
-                        ssh -o StrictHostKeyChecking=no ubuntu@3.108.195.69 "
-                            kubectl apply -f /home/ubuntu/deployment.yaml
-                            kubectl rollout status deployment/restapi-deployment
-                        "
-                    '''
+                echo "Applying deployment on EC2..."
+                ssh -o StrictHostKeyChecking=no ubuntu@3.108.195.69 "
+                    kubectl apply -f /home/ubuntu/deployment.yaml
+                "
+            '''
                 }
             }
         }
