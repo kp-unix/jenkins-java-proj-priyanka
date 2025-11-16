@@ -62,20 +62,20 @@ pipeline {
             }
         }
 	 stage('Deploy to Minikube on EC2') {
-   		 steps {
-        	sshagent(['ec2-ssh']) {   
+    steps {
+        sshagent(['ec2-ssh']) {   
             sh '''
                 echo "Copying deployment.yaml to EC2..."
                 scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.7.65.152:/home/ubuntu/
 
                 echo "Applying deployment on EC2..."
-                ssh -o StrictHostKeyChecking=no ubuntu@3.7.65.152"
-                    kubectl apply -f /home/ubuntu/deployment.yaml
-                "
+                ssh -o StrictHostKeyChecking=no ubuntu@3.7.65.152 \
+                    "kubectl apply -f /home/ubuntu/deployment.yaml"
             '''
-                }
-            }
         }
+    }
+}
+
 
 }
 
