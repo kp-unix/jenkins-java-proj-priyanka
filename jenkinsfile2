@@ -69,7 +69,7 @@ pipeline {
                 scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.7.65.152:/home/ubuntu/
 
                 echo "Applying deployment on EC2..."
-                ssh -o StrictHostKeyChecking=no ubuntu@3.108.195.69 "
+                ssh -o StrictHostKeyChecking=no ubuntu@3.7.65.152"
                     kubectl apply -f /home/ubuntu/deployment.yaml
                 "
             '''
