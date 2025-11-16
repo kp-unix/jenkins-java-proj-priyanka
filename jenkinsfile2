@@ -66,7 +66,7 @@ pipeline {
         	sshagent(['ec2-ssh']) {   
             sh '''
                 echo "Copying deployment.yaml to EC2..."
-                scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.108.195.69:/home/ubuntu/
+                scp -o StrictHostKeyChecking=no deployment.yaml ubuntu@3.7.65.152:/home/ubuntu/
 
                 echo "Applying deployment on EC2..."
                 ssh -o StrictHostKeyChecking=no ubuntu@3.108.195.69 "
